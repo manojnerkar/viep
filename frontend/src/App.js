@@ -1,31 +1,21 @@
-<<<<<<< HEAD
-function App() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-      <div className="bg-white rounded-2xl shadow-2xl p-8">
-        <h1 className="text-4xl font-bold text-gray-800 mb-4">
-          🎉 Tailwind CSS is Working!
-        </h1>
-        <p className="text-gray-600">
-          Your VIEP Platform is ready to build!
-        </p>
-      </div>
-    </div>
-  );
-}
-
-export default App;
-=======
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import toast, { Toaster } from 'react-hot-toast';
 import store from './redux/store';
+
+// Import all pages
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import VerifyOTP from './pages/VerifyOTP';
 import Dashboard from './pages/Dashboard';
+import Pricing from './pages/Pricing';
+import Projects from './pages/Projects';
+import Profile from './pages/Profile';
+import TaskBoard from './pages/TaskBoard';
+import Certificates from './pages/Certificates';
+import AdminDashboard from './pages/AdminDashboard';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -33,7 +23,14 @@ const ProtectedRoute = ({ children }) => {
   return token ? children : <Navigate to="/login" />;
 };
 
-// Public Route Component (redirect to dashboard if already logged in)
+// Admin Route Component
+const AdminRoute = ({ children }) => {
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  return token && user.role === 'admin' ? children : <Navigate to="/dashboard" />;
+};
+
+// Public Route Component
 const PublicRoute = ({ children }) => {
   const token = localStorage.getItem('token');
   return !token ? children : <Navigate to="/dashboard" />;
@@ -67,45 +64,26 @@ function App() {
             },
           }}
         />
+        
         <Routes>
-          {/* Home Page */}
-          <Route path="/" element={<Home />} />
-
           {/* Public Routes */}
-          <Route
-            path="/login"
-            element={
-              <PublicRoute>
-                <Login />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="/register"
-            element={
-              <PublicRoute>
-                <Register />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="/verify-otp"
-            element={
-              <PublicRoute>
-                <VerifyOTP />
-              </PublicRoute>
-            }
-          />
+          <Route path="/" element={<Home />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/projects" element={<Projects />} />
+          
+          {/* Auth Routes */}
+          <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+          <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+          <Route path="/verify-otp" element={<PublicRoute><VerifyOTP /></PublicRoute>} />
 
           {/* Protected Routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/tasks" element={<ProtectedRoute><TaskBoard /></ProtectedRoute>} />
+          <Route path="/certificates" element={<ProtectedRoute><Certificates /></ProtectedRoute>} />
+
+          {/* Admin Routes */}
+          <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
           
           {/* 404 Route */}
           <Route path="*" element={<Navigate to="/" />} />
@@ -118,4 +96,5 @@ function App() {
 export default App;
 
 
->>>>>>> 617b515b (Initial commit)
+
+
